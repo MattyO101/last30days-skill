@@ -919,13 +919,15 @@ When the user asks "X vs Y" (or "X vs Y vs Z"), the engine fans out N full `pipe
 # SKILL_DIR = absolute path of the directory containing THIS SKILL.md you just Read.
 # Substitute the actual path below — your harness told you where this file lives via
 # the Read tool result. Examples:
-#   Read ~/.claude/skills/last30days/SKILL.md      → SKILL_DIR=$HOME/.claude/skills/last30days
+#   Read ~/.claude/skills/last30days/SKILL.md      → a root symlink to skills/last30days/SKILL.md;
+#     realpath resolves it → SKILL_DIR=$HOME/.claude/skills/last30days/skills/last30days
 #   Read ~/.codex/skills/last30days/SKILL.md       → SKILL_DIR=$HOME/.codex/skills/last30days
 #   Read ~/.claude/plugins/cache/last30days-skill/last30days/3.10.0/skills/last30days/SKILL.md
 #     → SKILL_DIR=$HOME/.claude/plugins/cache/last30days-skill/last30days/3.10.0/skills/last30days
 # scripts/last30days.py is always a direct child of SKILL_DIR (every install layout
 # packages SKILL.md and scripts/ as siblings).
-SKILL_DIR="<absolute path of the directory containing the SKILL.md you Read>"
+# Resolve symlinks before the existence check below.
+SKILL_DIR="$(dirname "$(realpath "<the SKILL.md you Read>")")"
 
 if [ ! -f "$SKILL_DIR/scripts/last30days.py" ]; then
   echo "ERROR: scripts/last30days.py not found under SKILL_DIR=$SKILL_DIR" >&2
@@ -1266,13 +1268,15 @@ Store your plan as `QUERY_PLAN_JSON` - you'll pass it to the script in the next 
 # SKILL_DIR = absolute path of the directory containing THIS SKILL.md you just Read.
 # Substitute the actual path below — your harness told you where this file lives via
 # the Read tool result. Examples:
-#   Read ~/.claude/skills/last30days/SKILL.md      → SKILL_DIR=$HOME/.claude/skills/last30days
+#   Read ~/.claude/skills/last30days/SKILL.md      → a root symlink to skills/last30days/SKILL.md;
+#     realpath resolves it → SKILL_DIR=$HOME/.claude/skills/last30days/skills/last30days
 #   Read ~/.codex/skills/last30days/SKILL.md       → SKILL_DIR=$HOME/.codex/skills/last30days
 #   Read ~/.claude/plugins/cache/last30days-skill/last30days/3.10.0/skills/last30days/SKILL.md
 #     → SKILL_DIR=$HOME/.claude/plugins/cache/last30days-skill/last30days/3.10.0/skills/last30days
 # scripts/last30days.py is always a direct child of SKILL_DIR (every install layout
 # packages SKILL.md and scripts/ as siblings).
-SKILL_DIR="<absolute path of the directory containing the SKILL.md you Read>"
+# Resolve symlinks before the existence check below.
+SKILL_DIR="$(dirname "$(realpath "<the SKILL.md you Read>")")"
 
 if [ ! -f "$SKILL_DIR/scripts/last30days.py" ]; then
   echo "ERROR: scripts/last30days.py not found under SKILL_DIR=$SKILL_DIR" >&2
