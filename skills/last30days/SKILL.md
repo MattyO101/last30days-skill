@@ -117,7 +117,7 @@ These anchors used to live at line 1094 of this file. Three independent Opus 4.7
 🌐 last30days v{VERSION} · synced {YYYY-MM-DD}
 ```
 
-Replace `{VERSION}` with the installed plugin version (`jq -r '.version' "$SKILL_DIR/../../.claude-plugin/plugin.json" 2>/dev/null || awk '/^version:/{gsub(/"/,"",$2); print $2; exit}' "$SKILL_DIR/SKILL.md"`) and `{YYYY-MM-DD}` with today's date. No other text on this line. One blank line after, then the synthesis begins.
+Replace `{VERSION}` with the installed plugin version (`jq -r '.version' "$SKILL_DIR/../../.claude-plugin/plugin.json" 2>/dev/null || awk '/^version:/{gsub(/"/,"",\$2); print \$2; exit}' "$SKILL_DIR/SKILL.md"`) and `{YYYY-MM-DD}` with today's date. No other text on this line. One blank line after, then the synthesis begins.
 
 **Why the badge is MANDATORY:** it is the structural anchor for the canonical output shape. Without it the model drifts into blog-post narrative format with `##` section headers and invented titles, violating LAW 2 and LAW 4. The 2026-04-18 public v3.0.6 0/8 regression produced outputs with section headers like "The headline", "Why he is everywhere", "1. gstack dominates", "The 'Homecoming' peak". Direct cause: this anchor was absent. Do NOT skip the badge. Do NOT describe it. Do NOT paraphrase it. Emit it verbatim as line 1.
 
@@ -288,7 +288,7 @@ Before running any `last30days.py` command in this skill, resolve a Python 3.12+
 
 ```bash
 try_last30days_python() {
-  candidate="$1"
+  candidate="\$1"
   [ -n "$candidate" ] || return 1
   if [ -x "$candidate" ]; then
     :
@@ -303,7 +303,7 @@ try_last30days_python() {
 }
 
 windows_path_to_unix() {
-  path="$1"
+  path="\$1"
   [ -n "$path" ] || return 1
   if command -v cygpath >/dev/null 2>&1; then
     cygpath -u "$path"
@@ -696,7 +696,7 @@ Known keyword-trap classes and how to handle each:
 
 **One-turn gate rule:** do NOT run the engine on a keyword-trap topic without either (a) explicit user confirmation to "just run it anyway", or (b) a concrete reframed query. Burning 5 minutes on a doomed run is worse than a one-turn clarifying question.
 
-**When the user provides context inline:** if a Class 1 query already contains hobbies/relationship/budget ("gift for my cooking-obsessed husband, $200"), SKIP the clarifying question and go straight to the reframe + scope action. The clarifying question exists to fill in the gaps; if the gaps are already filled, move on.
+**When the user provides context inline:** if a Class 1 query already contains hobbies/relationship/budget ("gift for my cooking-obsessed husband, \$200"), SKIP the clarifying question and go straight to the reframe + scope action. The clarifying question exists to fill in the gaps; if the gaps are already filled, move on.
 
 ---
 
@@ -1483,7 +1483,7 @@ The Judge Agent must:
 
 3. **Weave odds into the narrative as supporting evidence.** Don't isolate Polymarket data in its own paragraph. Instead: "Final Four buzz is building - Polymarket gives Arizona a 12% chance to win the championship (up 3% this week), and 28% to earn a #1 seed."
 
-4. **Citation format: show ONLY % odds. NEVER mention dollar volumes, liquidity, or betting amounts.** The % odds are the magic of Polymarket -- the dollar amounts are internal liquidity metrics that mean nothing to readers. Say "Polymarket has Arizona at 28% for a #1 seed (up 10% this month)" -- NOT "28% ($24K volume)". The dollar figure adds zero value and clutters the insight.
+4. **Citation format: show ONLY % odds. NEVER mention dollar volumes, liquidity, or betting amounts.** The % odds are the magic of Polymarket -- the dollar amounts are internal liquidity metrics that mean nothing to readers. Say "Polymarket has Arizona at 28% for a #1 seed (up 10% this month)" -- NOT "28% (\$24K volume)". The dollar figure adds zero value and clutters the insight.
 
 5. **When multiple relevant markets exist, highlight 3-5 of the most interesting ones** in your synthesis, ordered by importance (structural > near-term). Don't just pick the highest-volume one.
 
@@ -1495,7 +1495,7 @@ The Judge Agent must:
 
 **Do NOT display stats here - they come at the end, right before the invitation.**
 
-6. **Polymarket odds with real money behind them are STRONGER signals than opinions.** A $66K volume market with 96% odds is more reliable than 100 tweets. Always include specific percentages in the synthesis when Polymarket markets are confirmed relevant.
+6. **Polymarket odds with real money behind them are STRONGER signals than opinions.** A \$66K volume market with 96% odds is more reliable than 100 tweets. Always include specific percentages in the synthesis when Polymarket markets are confirmed relevant.
 
 ### X Reply Cluster Weighting
 
