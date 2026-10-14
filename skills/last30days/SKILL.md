@@ -1038,7 +1038,7 @@ The first search finds subreddits. The second gives you current events context (
 Extract 3-5 subreddit names from the results. Store as `RESOLVED_SUBREDDITS` (comma-separated, no r/ prefix).
 
 **Dedicated vs broad subreddits.** Split the resolved subs into two buckets:
-- **Dedicated** = subreddits whose entire purpose IS the topic (the entity's home: `r/Kanye` / `r/WestSubEver` / `r/GoodAssSub` for "Kanye West", `r/OpenClaw` for OpenClaw). Every post there is on-topic. Store as `RESOLVED_DEDICATED_SUBREDDITS` and pass via `--dedicated-subreddits`. The engine pulls these in full (top+hot+new) and skips the relevance floor for them, so an on-topic post whose title lacks the entity name (a "BULLY Deluxe" thread in r/Kanye) is not dropped.
+- **Dedicated** = subreddits whose entire purpose IS the topic (the entity's home: `r/Kanye` / `r/WestSubEver` / `r/GoodAssSub` for "Kanye West", `r/OpenClaw` for OpenClaw). Every post there is on-topic. Store as `RESOLVED_DEDICATED_SUBREDDITS` and pass via `--dedicated-subreddits`. The engine pulls these in full (top+hot+new) and skips the relevance floor for them, so an on-topic post whose title lacks the entity name (a "BULLY Deluxe" thread in r/Kanye) is not dropped. Floor-exempt does not mean kept: the fused pool is cut afterwards (`pipeline.py` `pool_limit`, 40 at default depth), and one run fetched 41 posts from a dedicated sub and reported 3 (which stage dropped the rest was not traced); another returned 3 of the 57 the sub had in 30 days (DefinedSelf, 2026-10-06/07). Never count a subreddit from this output: read its `/r/<sub>/new.json?limit=100` in a logged-out browser (curl got 403; Reddit's terms on automated reads: `chrome-automation-gotchas` site notes § Reddit) and class each post yourself.
 - **Broad** = mixed-content communities where the topic is only sometimes discussed (`r/hiphopheads`, `r/Music`, category peers from 2a). Store as `RESOLVED_SUBREDDITS` and pass via `--subreddits`. These stay relevance-floored.
 Label conservatively: only a sub clearly named for / dedicated to the entity goes in the dedicated bucket. Most topics have 0-3 dedicated subs (people and products often have one; generic concepts have none). When unsure, treat it as broad.
 
@@ -1391,7 +1391,7 @@ For ALL query types:
 
 **Options** (passed through from user's command):
 - `--days=N` → Look back N days instead of 30 (e.g., `--days=7` for weekly roundup)
-- `--quick` → Faster, fewer sources (8-12 each)
+- `--quick` → each subquery keeps only the top 2 sources for its intent (`lib/planner.py` `QUICK_SOURCE_PRIORITY`, `SOURCE_LIMITS`), so whole platforms drop out: on one product-intent run it left jobs, YouTube and grounding, no Reddit or X (2026-10-07). A control run uses the same depth as the run it controls
 - (default) → Balanced (20-30 each)
 - `--deep` → Comprehensive (50-70 Reddit, 40-60 X)
 
